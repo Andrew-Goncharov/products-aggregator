@@ -31,7 +31,7 @@ categories_table = Table(
     "categories",
     metadata,
     Column("id", Integer, primary_key=True),
-    Column("parentId", Integer, ForeignKey("categories.id"), nullable=False),
+    Column("parentId", Integer, ForeignKey("categories.id"), nullable=True),
     Column("categoryName", String, nullable=False),
     Column("price", Integer, nullable=False),
     Column("date", Date, nullable=False),
