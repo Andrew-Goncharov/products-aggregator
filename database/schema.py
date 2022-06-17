@@ -33,6 +33,6 @@ categories_table = Table(
     Column("id", Integer, primary_key=True),
     Column("parentId", Integer, ForeignKey("categories.id"), nullable=True),
     Column("categoryName", String, nullable=False),
-    Column("price", Integer, nullable=False),
+    Column("price", Integer, nullable=True),
     Column("date", Date, nullable=False),
 )
