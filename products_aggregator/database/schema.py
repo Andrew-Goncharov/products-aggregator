@@ -16,22 +16,13 @@ convention = {
 
 metadata = MetaData(naming_convention=convention)
 
-
-products_table = Table(
-    "products",
+nodes_table = Table(
+    "nodes",
     metadata,
     Column("id", Integer, primary_key=True),
-    Column("category_id", Integer, ForeignKey("categories.id", ondelete="CASCADE"), nullable=True),
+    Column("parent_id", Integer, ForeignKey("nodes.id", ondelete="CASCADE"), nullable=True),
     Column("name", String, nullable=False),
-    Column("price", Integer, nullable=False),
+    Column("price", Integer, nullable=True),
     Column("updated_dt", DateTime, nullable=False),
-)
-
-categories_table = Table(
-    "categories",
-    metadata,
-    Column("id", Integer, primary_key=True),
-    Column("parent_id", Integer, ForeignKey("categories.id", ondelete="CASCADE"), nullable=True),
-    Column("name", String, nullable=False),
-    Column("updated_dt", DateTime, nullable=False),
+    Column("type", String, nullable=False)
 )
