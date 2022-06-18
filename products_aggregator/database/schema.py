@@ -1,5 +1,5 @@
 from sqlalchemy import (
-    Column, Date, Enum as PgEnum, ForeignKey, ForeignKeyConstraint, Integer,
+    Column, DateTime,  ForeignKey, Integer,
     MetaData, String, Table,
 )
 
@@ -21,18 +21,17 @@ products_table = Table(
     "products",
     metadata,
     Column("id", Integer, primary_key=True),
-    Column("parentId", Integer, ForeignKey("categories.id"), nullable=True),
-    Column("productName", String, nullable=False),
+    Column("category_id", Integer, ForeignKey("categories.id", ondelete="CASCADE"), nullable=True),
+    Column("name", String, nullable=False),
     Column("price", Integer, nullable=False),
-    Column("date", Date, nullable=False),
+    Column("updated_dt", DateTime, nullable=False),
 )
 
 categories_table = Table(
     "categories",
     metadata,
     Column("id", Integer, primary_key=True),
-    Column("parentId", Integer, ForeignKey("categories.id"), nullable=True),
-    Column("categoryName", String, nullable=False),
-    Column("price", Integer, nullable=True),
-    Column("date", Date, nullable=False),
+    Column("parent_id", Integer, ForeignKey("categories.id", ondelete="CASCADE"), nullable=True),
+    Column("name", String, nullable=False),
+    Column("updated_dt", DateTime, nullable=False),
 )
