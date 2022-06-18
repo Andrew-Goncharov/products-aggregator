@@ -9,7 +9,7 @@ import sys
 
 sys.path = ['', '..'] + sys.path[1:]
 
-from database import schema
+from products_aggregator.database import schema
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
