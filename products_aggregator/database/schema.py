@@ -19,8 +19,8 @@ metadata = MetaData(naming_convention=convention)
 nodes_table = Table(
     "nodes",
     metadata,
-    Column("id", Integer, primary_key=True),
-    Column("parent_id", Integer, ForeignKey("nodes.id", ondelete="CASCADE"), nullable=True),
+    Column("id", String, primary_key=True),
+    Column("parent_id", String, ForeignKey("nodes.id", ondelete="CASCADE"), nullable=True),
     Column("name", String, nullable=False),
     Column("price", Integer, nullable=True),
     Column("updated_dt", DateTime, nullable=False),
