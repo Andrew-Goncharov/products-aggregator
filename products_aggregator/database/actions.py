@@ -18,8 +18,6 @@ def delete(node_id: str, connection: Connection) -> None:    # delete parent -> 
 
 
 def insert(nodes: list[dict], connection: Connection) -> None:
-    for node in nodes:
-        node["updated_dt"] = datetime.datetime.now()
     query = postgresql.insert(schema.nodes_table)
     query = query.on_conflict_do_update(
         index_elements=[schema.nodes_table.c.id],
