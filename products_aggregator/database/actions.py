@@ -3,22 +3,29 @@ from sqlalchemy.engine import Connection
 from products_aggregator.database import schema
 import datetime
 
+from sqlalchemy.dialects import postgresql
+
 
 def delete(node_id: str, connection: Connection) -> None:    # delete parent -> delete all children test
     query = schema.nodes_table.delete().where(schema.nodes_table.c.id == node_id)
     connection.execute(query)
 
 
-def update(node: dict, connection: Connection) -> None:
-    node["updated_dt"] = datetime.datetime.now()
-    query = schema.nodes_table.update().values(node).where(schema.nodes_table.c.id == node["id"])
-    connection.execute(query)
+# def update(node: dict, connection: Connection) -> None:
+#     node["updated_dt"] = datetime.datetime.now()
+#     query = schema.nodes_table.update().values(node).where(schema.nodes_table.c.id == node["id"])
+#     connection.execute(query)
 
 
 def insert(nodes: list[dict], connection: Connection) -> None:
     for node in nodes:
         node["updated_dt"] = datetime.datetime.now()
-    connection.execute(schema.nodes_table.insert(), nodes)
+    query = postgresql.insert(schema.nodes_table)
+    query = query.on_conflict_do_update(
+        index_elements=[schema.nodes_table.c.id],
+        set_=dict(query.excluded)
+    )
+    connection.execute(query, nodes)
 
 
 def get_recursive(node_id: str, connection: Connection) -> list[dict]:

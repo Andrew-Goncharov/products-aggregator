@@ -15,15 +15,17 @@ engine = create_engine("postgresql://postgres:p2k8zR347@localhost:5432/postgres"
 
 # # id != parent_id -> check
 
-# ids = [str(uuid4()) for _ in range(10)]
-# prices = [randint(0, 1000) for _ in range(10)]
-#
+ids = [str(uuid4()) for _ in range(10)]
+prices = [randint(0, 1000) for _ in range(10)]
+
 # insert([{"id": ids[0], "parent_id": None,   "name": "category_0", "price": prices[0], "updated_dt": datetime.datetime.now(), "type": "CATEGORY"},
 #         {"id": ids[1], "parent_id": ids[0], "name": "product_1",  "price": prices[1], "updated_dt": datetime.datetime.now(), "type": "OFFER"},
 #         {"id": ids[2], "parent_id": ids[0], "name": "category_2", "price": prices[2], "updated_dt": datetime.datetime.now(), "type": "CATEGORY"},
 #         {"id": ids[3], "parent_id": ids[2], "name": "product_3",  "price": prices[3], "updated_dt": datetime.datetime.now(), "type": "OFFER"},
 #         {"id": ids[4], "parent_id": ids[2], "name": "product_4",  "price": prices[4], "updated_dt": datetime.datetime.now(), "type": "OFFER"}], engine.connect())
 
+
+insert([{"id": "5596a3d1-e57b-4709-8801-6999db92b666", "parent_id": None, "name": "category_2_updated",  "price": prices[4], "updated_dt": datetime.datetime.now(), "type": "CATEGORY"}], engine.connect())
 
 # update("0", {"price": 400}, engine.connect())
 # update("0", {"id": "0", "parent_id": None, "name": "category", "price": 400, "updated_dt": datetime.datetime.now(), "type": "category"}, engine.connect())
@@ -61,9 +63,9 @@ engine = create_engine("postgresql://postgres:p2k8zR347@localhost:5432/postgres"
 #
 # print(json.dumps(data, default=date_info))
 
-
-print(datetime.datetime.now().strftime('%Y-%m-%dT%H:%M:%S.%f%z'))
-print(datetime.datetime.now().strftime('%Y-%m-%dT%H:%M:%SZ'),)
+#
+# print(datetime.datetime.now().strftime('%Y-%m-%dT%H:%M:%S.%f%z'))
+# print(datetime.datetime.now().strftime('%Y-%m-%dT%H:%M:%SZ'),)
 
 # .toISOString()
 # datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
