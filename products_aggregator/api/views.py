@@ -1,4 +1,6 @@
 from typing import Literal, Optional
+
+import sqlalchemy
 from fastapi import FastAPI, Depends
 from fastapi.exceptions import RequestValidationError
 from pydantic import BaseModel, validator, root_validator, NonNegativeInt
@@ -77,8 +79,8 @@ class Item(BaseModel):
     id: UUID
     name: str
     parentId: Optional[UUID]
-    type: Literal["OFFER", "CATEGORY"]
     price: Optional[NonNegativeInt]
+    type: Literal["OFFER", "CATEGORY"]
 
     def __getitem__(self, item):
         return getattr(self, item)
@@ -120,8 +122,8 @@ class ImportRequest(BaseModel):
 
 def map_db_node(item: Item, update_date: datetime) -> dict:
     return {
-        "id": item.id,
-        "parent_id": item.parentId,
+        "id": str(item.id),
+        "parent_id": str(item.parentId),
         "name": item.name,
         "price": item.price,
         "updated_dt": update_date,
@@ -161,20 +163,29 @@ def validation_exception_handler(request, exc):
     )
 
 
+@app.exception_handler(sqlalchemy.exc.IntegrityError)
+def exception_handler(request, exc):
+    return JSONResponse(
+        status_code=400,
+        content={
+          "code": 400,
+          "message": "Validation Failed"
+        }
+    )
+
+
 @app.post("/imports")
 def imports(request: ImportRequest, connection: Connection = Depends(get_connection)):
     data = map_db_nodes(request)
-
-    if type(item[key]) != type(pattern[key]):
-        JSONResponse(
+    if not insert_type_validation(data, connection):
+        return JSONResponse(
             status_code=400,
             content={
                 "code": 400,
                 "message": "Validation Failed"
             }
         )
-
-    insert(imported_data, connection)
+    insert(data, connection)
 
 
 @app.delete("/delete/{node_id}")
@@ -187,9 +198,7 @@ def delete(node_id: str, connection: Connection = Depends(get_connection)):
               "message": "Validation Failed"
             }
         )
-
     result = actions.get_many([node_id], connection)
-
     if len(result) == 0:
         return JSONResponse(
             status_code=404,
@@ -198,23 +207,20 @@ def delete(node_id: str, connection: Connection = Depends(get_connection)):
                 "message": "Item not found"
             },
         )
-
     actions.delete(node_id, connection)
 
 
 @app.get("/nodes/{node_id}")
 def get(node_id: str, connection: Connection = Depends(get_connection)):
-    # if not is_valid_uuid(node_id): # Invalid id
-    #     return JSONResponse(
-    #         status_code=400,
-    #         content={
-    #           "code": 400,
-    #           "message": "Validation Failed"
-    #         }
-    #     )
-
+    if not is_valid_uuid(node_id):     # Invalid id
+        return JSONResponse(
+            status_code=400,
+            content={
+              "code": 400,
+              "message": "Validation Failed"
+            }
+        )
     result = actions.get_recursive(node_id, connection)
-
     if len(result) == 0:            # Nothing found
         return JSONResponse(
             status_code=404,
