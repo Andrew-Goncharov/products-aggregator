@@ -10,8 +10,8 @@ import datetime
 
 engine = create_engine("postgresql://postgres:p2k8zR347@localhost:5432/postgres")
 
-# delete("4e50b7e5-1585-4260-b068-12d0942da745", engine.connect())
-# delete("c463eaad-24ce-49e4-81bb-3208bd0e8b67", engine.connect())
+delete("f06501df-03f2-4860-b92c-73278eac9919", engine.connect())
+delete("5596a3d1-e57b-4709-8801-6999db92b666", engine.connect())
 
 # # id != parent_id -> check
 #
