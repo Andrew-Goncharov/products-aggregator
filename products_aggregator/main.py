@@ -63,10 +63,10 @@ delete("5596a3d1-e57b-4709-8801-6999db92b666", engine.connect())
 #
 # print(json.dumps(data, default=date_info))
 
-#
-# print(datetime.datetime.now().strftime('%Y-%m-%dT%H:%M:%S.%f%z'))
-# print(datetime.datetime.now().strftime('%Y-%m-%dT%H:%M:%SZ'),)
 
+print(datetime.datetime.now().strftime('%Y-%m-%dT%H:%M:%S.%fZ'))
+print(datetime.datetime.now().strftime('%Y-%m-%dT%H:%M:%SZ'),)
+#
 # .toISOString()
 # datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
 

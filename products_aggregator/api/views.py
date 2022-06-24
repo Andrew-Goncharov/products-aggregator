@@ -17,19 +17,26 @@ app = FastAPI()
 engine = create_engine("postgresql://postgres:p2k8zR347@localhost:5432/postgres")
 
 
-def calculate_average_price(node: dict) -> tuple[int, int]:     # (price, sum_count)
+def calculate_price_date(node: dict) -> tuple[int, int, str]:
     if node["type"] == "OFFER":
-        return node["price"], 1
+        return node["price"], 1, node["date"]
 
     total_price = 0
     total_count = 0
+    max_date = node["date"]
     for child in node["children"]:
-        price, count = calculate_average_price(child)
+        price, count, date = calculate_price_date(child)
         total_price += price
         total_count += count
+        max_date = max(max_date, date)
 
     node["price"] = total_price // total_count
-    return total_price, total_count
+    node["date"] = max_date
+    return total_price, total_count, max_date
+
+
+def format_datetime(dt: datetime) -> str:
+    return dt.strftime('%Y-%m-%dT%H:%M:%S.000Z')   # dt.isoformat(timespec="milliseconds") + "Z"
 
 
 def map_node(node_db: dict) -> dict:
@@ -38,10 +45,14 @@ def map_node(node_db: dict) -> dict:
         "name": node_db["name"],
         "type": node_db["type"],
         "parentId": node_db["parent_id"],
-        "date": node_db["updated_dt"].strftime('%Y-%m-%dT%H:%M:%SZ'),
+        "date": format_datetime(node_db["updated_dt"]),
         "price": node_db["price"] if node_db["type"] == "OFFER" else None,
         "children": None if node_db["type"] == "OFFER" else []
     }
+
+
+def edit_dates(node: dict) -> None:
+    pass
 
 
 def create_get_node_result(nodes: list[dict], root_node_id: str) -> dict:
@@ -56,7 +67,7 @@ def create_get_node_result(nodes: list[dict], root_node_id: str) -> dict:
         parent_node["children"].append(node)
 
     root_node = id_to_node[root_node_id]
-    calculate_average_price(root_node)
+    calculate_price_date(root_node)
 
     return root_node
 
@@ -123,7 +134,7 @@ class ImportRequest(BaseModel):
 def map_db_node(item: Item, update_date: datetime) -> dict:
     return {
         "id": str(item.id),
-        "parent_id": str(item.parentId),
+        "parent_id": str(item.parentId) if item.parentId is not None else item.parentId,
         "name": item.name,
         "price": item.price,
         "updated_dt": update_date,
