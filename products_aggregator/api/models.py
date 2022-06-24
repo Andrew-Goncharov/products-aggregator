@@ -3,6 +3,8 @@ from uuid import UUID
 from pydantic import BaseModel, NonNegativeInt, root_validator, validator
 from pydantic.validators import datetime
 
+from products_aggregator.api.helpers import is_valid_datetime
+
 
 class Item(BaseModel):
     id: UUID
@@ -41,9 +43,14 @@ class ImportRequest(BaseModel):
                     category_ids.add(item["id"])
             else:
                 raise ValueError("Non-unique values exist.")
-
         offer_ids = all_ids - category_ids
         for item in v:
             if item["parentId"] in offer_ids:
                 raise ValueError("parentId does not belong to category ids.")
+        return v
+
+    @validator("updateDate", pre=True)
+    def updateDate_validator(cls, v):
+        if not isinstance(v, str) or not is_valid_datetime(v):
+            raise ValueError("Invalid datetime value.")
         return v

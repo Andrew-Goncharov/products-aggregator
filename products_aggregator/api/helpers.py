@@ -1,11 +1,9 @@
 from uuid import UUID
-from fastapi import Depends
 from pydantic.validators import datetime
-from products_aggregator.api.models import Item, ImportRequest
-
 from sqlalchemy.engine import Connection
-# from products_aggregator.api.views import get_connection
 from products_aggregator.database.actions import get_many
+# from products_aggregator.api.models import Item, ImportRequest
+import datetime as dt
 
 
 def calculate_price_date(node: dict) -> tuple[int, int, str]:
@@ -59,15 +57,7 @@ def create_get_node_result(nodes: list[dict], root_node_id: UUID) -> dict:
     return root_node
 
 
-def is_valid_uuid(value: str) -> bool:
-    try:
-        UUID(value)
-        return True
-    except Exception:
-        return False
-
-
-def map_db_node(item: Item, update_date: datetime) -> dict:
+def map_db_node(item, update_date: datetime) -> dict:   # item: Item
     return {
         "id": str(item.id),
         "parent_id": str(item.parentId) if item.parentId is not None else item.parentId,
@@ -78,7 +68,7 @@ def map_db_node(item: Item, update_date: datetime) -> dict:
     }
 
 
-def map_db_nodes(request: ImportRequest) -> list[dict]:
+def map_db_nodes(request) -> list[dict]:    # request: ImportRequest
     result = []
     update_date = request.updateDate
     for item in request.items:
@@ -96,3 +86,21 @@ def insert_type_validation(nodes: list[dict], connection: Connection) -> bool:
         if curr_node["type"] != node["type"]:
             return False
     return True
+
+
+def insert_parent_type_validation(nodes: list[dict], connection: Connection) -> bool:
+    parent_ids = [node["parent_id"] for node in nodes]
+    available_nodes = get_many(parent_ids, connection)
+    for node in available_nodes:
+        if node["type"] != "CATEGORY":
+            return False
+    return True
+
+
+def is_valid_datetime(value: str) -> bool:
+    try:
+        dt.datetime.strptime(value, '%Y-%m-%dT%H:%M:%S.000Z')
+        return True
+    except Exception:
+        return False
+

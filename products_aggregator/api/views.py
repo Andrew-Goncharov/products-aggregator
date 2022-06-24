@@ -6,7 +6,8 @@ from sqlalchemy import create_engine
 from sqlalchemy.engine import Connection
 from starlette.responses import JSONResponse
 
-from products_aggregator.api.helpers import map_db_nodes, insert_type_validation, create_get_node_result
+from products_aggregator.api.helpers import map_db_nodes, insert_type_validation, create_get_node_result, \
+    insert_parent_type_validation
 from products_aggregator.api.models import ImportRequest
 from products_aggregator.database import actions
 from products_aggregator.database.actions import insert
@@ -48,7 +49,7 @@ def exception_handler(request, exc):
 @app.post("/imports")
 def imports(request: ImportRequest, connection: Connection = Depends(get_connection)):
     data = map_db_nodes(request)
-    if not insert_type_validation(data, connection):
+    if not insert_type_validation(data, connection) or not insert_parent_type_validation(data, connection):
         return JSONResponse(
             status_code=400,
             content={
