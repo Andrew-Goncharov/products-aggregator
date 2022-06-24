@@ -1,3 +1,4 @@
+import os
 from uuid import UUID
 
 from fastapi import FastAPI, Depends
@@ -15,7 +16,7 @@ import sqlalchemy
 
 app = FastAPI()
 
-engine = create_engine("postgresql://postgres:p2k8zR347@localhost:5432/postgres")
+engine = create_engine(os.environ["DATABASE_URL"])
 
 
 def get_connection():
