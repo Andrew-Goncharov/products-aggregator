@@ -4,7 +4,7 @@ from pydantic.validators import datetime
 from products_aggregator.api.models import Item, ImportRequest
 
 from sqlalchemy.engine import Connection
-from products_aggregator.api.views import get_connection
+# from products_aggregator.api.views import get_connection
 from products_aggregator.database.actions import get_many
 
 
@@ -48,12 +48,12 @@ def create_get_node_result(nodes: list[dict], root_node_id: UUID) -> dict:
         id_to_node[node["id"]] = map_api_node(node)
 
     for node in id_to_node.values():
-        if node["id"] == root_node_id:
+        if node["id"] == str(root_node_id):
             continue
         parent_node = id_to_node[node["parentId"]]
         parent_node["children"].append(node)
 
-    root_node = id_to_node[root_node_id]
+    root_node = id_to_node[str(root_node_id)]
     calculate_price_date(root_node)
 
     return root_node
@@ -86,7 +86,7 @@ def map_db_nodes(request: ImportRequest) -> list[dict]:
     return result
 
 
-def insert_type_validation(nodes: list[dict], connection: Connection = Depends(get_connection)) -> bool:
+def insert_type_validation(nodes: list[dict], connection: Connection) -> bool:
     id_to_node = dict()
     for node in nodes:
         id_to_node[node["id"]] = node

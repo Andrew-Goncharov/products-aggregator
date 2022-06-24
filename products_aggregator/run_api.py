@@ -1,5 +1,4 @@
 import uvicorn
-
 from products_aggregator.api.views import app
 
 if __name__ == "__main__":

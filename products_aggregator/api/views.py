@@ -6,7 +6,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.engine import Connection
 from starlette.responses import JSONResponse
 
-from products_aggregator.api.helpers import map_db_nodes, insert_type_validation, is_valid_uuid, create_get_node_result
+from products_aggregator.api.helpers import map_db_nodes, insert_type_validation, create_get_node_result
 from products_aggregator.api.models import ImportRequest
 from products_aggregator.database import actions
 from products_aggregator.database.actions import insert
@@ -61,7 +61,7 @@ def imports(request: ImportRequest, connection: Connection = Depends(get_connect
 
 @app.delete("/delete/{node_id}")
 def delete(node_id: UUID, connection: Connection = Depends(get_connection)):
-    result = actions.get_many([node_id], connection)
+    result = actions.get_many([str(node_id)], connection)
     if len(result) == 0:
         return JSONResponse(
             status_code=404,
@@ -70,12 +70,12 @@ def delete(node_id: UUID, connection: Connection = Depends(get_connection)):
                 "message": "Item not found"
             },
         )
-    actions.delete(node_id, connection)
+    actions.delete(str(node_id), connection)
 
 
 @app.get("/nodes/{node_id}")
 def get(node_id: UUID, connection: Connection = Depends(get_connection)):
-    result = actions.get_recursive(node_id, connection)
+    result = actions.get_recursive(str(node_id), connection)
     if len(result) == 0:
         return JSONResponse(
             status_code=404,
