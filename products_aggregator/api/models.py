@@ -42,8 +42,8 @@ class ImportRequest(BaseModel):
             else:
                 raise ValueError("Non-unique values exist.")
 
+        offer_ids = all_ids - category_ids
         for item in v:
-            if item["parentId"] in (all_ids - category_ids):
-                # item["parentId"] not in category_ids and item["parentId"] is not None:
+            if item["parentId"] in offer_ids:
                 raise ValueError("parentId does not belong to category ids.")
         return v

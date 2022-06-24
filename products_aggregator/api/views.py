@@ -1,3 +1,5 @@
+from uuid import UUID
+
 from fastapi import FastAPI, Depends
 from fastapi.exceptions import RequestValidationError
 from sqlalchemy import create_engine
@@ -58,15 +60,7 @@ def imports(request: ImportRequest, connection: Connection = Depends(get_connect
 
 
 @app.delete("/delete/{node_id}")
-def delete(node_id: str, connection: Connection = Depends(get_connection)):
-    if not is_valid_uuid(node_id):
-        return JSONResponse(
-            status_code=400,
-            content={
-              "code": 400,
-              "message": "Validation Failed"
-            }
-        )
+def delete(node_id: UUID, connection: Connection = Depends(get_connection)):
     result = actions.get_many([node_id], connection)
     if len(result) == 0:
         return JSONResponse(
@@ -80,15 +74,7 @@ def delete(node_id: str, connection: Connection = Depends(get_connection)):
 
 
 @app.get("/nodes/{node_id}")
-def get(node_id: str, connection: Connection = Depends(get_connection)):
-    if not is_valid_uuid(node_id):
-        return JSONResponse(
-            status_code=400,
-            content={
-              "code": 400,
-              "message": "Validation Failed"
-            }
-        )
+def get(node_id: UUID, connection: Connection = Depends(get_connection)):
     result = actions.get_recursive(node_id, connection)
     if len(result) == 0:
         return JSONResponse(

@@ -30,7 +30,7 @@ def format_datetime(dt: datetime) -> str:
     return dt.strftime('%Y-%m-%dT%H:%M:%S.000Z')
 
 
-def map_node(node_db: dict) -> dict:
+def map_api_node(node_db: dict) -> dict:
     return {
         "id": node_db["id"],
         "name": node_db["name"],
@@ -42,10 +42,10 @@ def map_node(node_db: dict) -> dict:
     }
 
 
-def create_get_node_result(nodes: list[dict], root_node_id: str) -> dict:
+def create_get_node_result(nodes: list[dict], root_node_id: UUID) -> dict:
     id_to_node = dict()
     for node in nodes:
-        id_to_node[node["id"]] = map_node(node)
+        id_to_node[node["id"]] = map_api_node(node)
 
     for node in id_to_node.values():
         if node["id"] == root_node_id:
@@ -93,7 +93,6 @@ def insert_type_validation(nodes: list[dict], connection: Connection = Depends(g
     available_nodes = get_many(list(id_to_node.keys()), connection)
     for node in available_nodes:
         curr_node = id_to_node[node["id"]]
-        for key in node.keys():
-            if not isinstance(curr_node[key], type(node[key])):
-                return False
+        if curr_node["type"] != node["type"]:
+            return False
     return True
