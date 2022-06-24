@@ -19,7 +19,7 @@ def calculate_price_date(node: dict) -> tuple[int, int, str]:
         total_count += count
         max_date = max(max_date, date)
 
-    node["price"] = total_price // total_count
+    node["price"] = total_price // total_count if total_count > 0 else None
     node["date"] = max_date
     return total_price, total_count, max_date
 
