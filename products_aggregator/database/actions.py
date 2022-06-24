@@ -1,6 +1,6 @@
 from sqlalchemy import text
 from sqlalchemy.engine import Connection
-from products_aggregator.database import schema
+from database import schema
 from sqlalchemy.dialects import postgresql
 
 

@@ -7,11 +7,11 @@ from sqlalchemy import create_engine
 from sqlalchemy.engine import Connection
 from starlette.responses import JSONResponse
 
-from products_aggregator.api.helpers import map_db_nodes, insert_type_validation, create_get_node_result, \
+from api.helpers import map_db_nodes, insert_type_validation, create_get_node_result, \
     insert_parent_type_validation
-from products_aggregator.api.models import ImportRequest
-from products_aggregator.database import actions
-from products_aggregator.database.actions import insert
+from api.models import ImportRequest
+from database import actions
+from database.actions import insert
 import sqlalchemy
 
 app = FastAPI()

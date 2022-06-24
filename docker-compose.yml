@@ -17,7 +17,7 @@ services:
     build: .
     ports:
       - 80:80
-    command: bash -c "cd migrations && alembic upgrade head && cd .. && python products_aggregator/run_api.py"
+    command: bash -c "cd migrations && alembic upgrade head && cd ../products_aggregator && python run_api.py"
     environment:
       - DATABASE_URL=postgresql://postgres:p2k8zR347@db:5432/postgres
     depends_on:

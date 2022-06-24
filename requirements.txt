@@ -2,6 +2,6 @@ alembic==1.3.3
 asyncpgsa==0.27.1
 psycopg2-binary==2.8.4
 SQLAlchemy==1.3.14
-fastapi==0.70.0
-pydantic==1.7.4
+fastapi==0.78.0
+pydantic==1.9.1
 uvicorn==0.15.0

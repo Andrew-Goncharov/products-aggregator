@@ -3,7 +3,7 @@ from uuid import UUID
 from pydantic import BaseModel, NonNegativeInt, root_validator, validator
 from pydantic.validators import datetime
 
-from products_aggregator.api.helpers import is_valid_datetime
+from api.helpers import is_valid_datetime
 
 
 class Item(BaseModel):

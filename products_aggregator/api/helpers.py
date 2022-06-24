@@ -1,8 +1,8 @@
 from uuid import UUID
 from pydantic.validators import datetime
 from sqlalchemy.engine import Connection
-from products_aggregator.database.actions import get_many
-# from products_aggregator.api.models import Item, ImportRequest
+from database.actions import get_many
+# from api.models import Item, ImportRequest
 import datetime as dt
 
 

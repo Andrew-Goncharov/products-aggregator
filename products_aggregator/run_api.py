@@ -1,5 +1,5 @@
 import uvicorn
-from products_aggregator.api.views import app
+from api.views import app
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=80)
