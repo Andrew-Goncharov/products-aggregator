@@ -1,3 +1,31 @@
-lsIntroductory assignment to the Yandex Backend Development School 2022.
+# Проект: Агрегатор товаров
+### Описание
 
+Вступительное задание для шклолы backend-разработки yandex 2022
 
+REST API сервис products-aggregator позволяет магазинам загружать и обновлять информацию о товарах, а пользователям - сравнивать цены продуктов и анализировать
+товары по категориям.
+
+### Представление
+
+Приложение упаковано в Docker-контейнер, рабочее окружение настроено с помощью Docker-compose:
+
+ - <code>docker-compose build</code> - сборка проекта
+ - <code>docker-compose up</code> - запуск контейнера
+ - <code>docker-compose down</code> - остановка контейнера
+
+### Режим работы
+
+Для обработки входящих запросов поднято 20 процессов. Подробную информацию о конфигурации можно найти в файле <code>docker-compose.yml</code>.
+
+### Управление миграциями БД
+
+В качестве СУБД в проекте используется PostgreSQL. Схема базы данных описана с помощью ORM SQLAlchemy. За работу с миграциями отвечает Alembic:
+
+ - <code>alembic revision --message="additional" -autogenerate</code> - создание миграции
+ - <code>alembic upgrade head</code> - применение всех доступных миграций
+ - <code>alembic downgrade -1</code> - возвращение к предыдущей версии
+ 
+### Удаленный доступ
+
+URL проекта в интернете - <https://worthy-1990.usr.yandex-academy.ru>
